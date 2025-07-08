@@ -1,54 +1,80 @@
-# React + TypeScript + Vite
+# 💼 AI-Powered Mock Interview
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An AI-driven mock interview platform that simulates real-life technical and behavioral interviews using Gemini LLM, Firebase, and TypeScript. Built for students and job seekers to practice SDE interviews with real-time AI feedback, performance tracking, and personalized question generation.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## Expanding the ESLint configuration
+- 🎯 AI-generated coding & HR questions using Gemini API
+- 🧠 Real-time feedback on candidate responses (LLM scoring)
+- 👨‍💼 Admin dashboard to manage questions and view stats
+- 🔐 Secure login using Firebase Auth and Clerk.dev
+- 📊 Response history tracking in Firestore
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## 🛠️ Tech Stack
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- **Frontend:** TypeScript, HTML, CSS
+- **Backend / AI Logic:** Gemini API (Google's LLM)
+- **Database & Authentication:** Firebase Firestore, Firebase Auth, Clerk.dev (JWT Auth)
+- **Deployment:** Firebase Hosting / Vercel
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+## 📷 Screenshots
+
+> Place screenshots inside an `assets/` folder in your project.
+
+### 🔹 Home Page
+
+> Landing page where users can start or log in.
+
+![Home Page](assets/MainPage.png.png)
+
+---
+
+### 🔹 Dashboard View
+
+> User dashboard showing profile, history, and options.
+
+![Dashboard](assets/Dashboard.png)
+
+---
+
+### 🔹 Create Interview Session
+
+> Form to configure interview type, difficulty, and topics.
+
+![Create Interview](assets/createinterview.png)
+
+---
+
+### 🔹 Interview In Progress
+
+> AI-driven interview experience with real-time question generation.
+
+![Interview In Progress](assets/takinginterview.png)
+
+---
+
+### 🔹 AI Feedback Summary
+
+> LLM-generated feedback and score after session ends.
+
+![AI Feedback](assets/feedback.png)
+
+## 📦 Getting Started
+
+```bash
+git clone https://github.com/ManeethReddy23/AI-Powered-Mock-Interview.git
+cd AI-Powered-Mock-Interview
+
+# Install dependencies
+npm install
+
+# Add your Firebase and Gemini API keys in `.env`
+
+# Start the development server
+npm run dev
