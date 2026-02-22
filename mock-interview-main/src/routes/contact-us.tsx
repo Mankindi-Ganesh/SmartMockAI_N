@@ -17,68 +17,68 @@ const ContactUs: React.FC<ContactUsProps> = () => {
         <div className="contact-info space-y-6 bg-gray-100 border border-gray-200 p-6 rounded-lg shadow-lg">
           <h2 className="text-2xl font-semibold text-blue-600 mb-6">Our Contact Information</h2>
           <div className="space-y-4">
-            {/* G.Siddartha */}
+            {/* G.rohith */}
             <div className="p-4 rounded-lg bg-white shadow-sm">
-              <h3 className="text-lg font-semibold text-indigo-600">Name: G.Siddartha</h3>
+              <h3 className="text-lg font-semibold text-indigo-600">Name: A.Rohith</h3>
               <p className="text-gray-700">
-                <strong>PinNo:</strong> 23245A6614
+                <strong>PinNo:</strong> 23BD5A1201
               </p>
               <div className="flex items-center gap-2">
                 <Mail className="w-5 h-5 text-blue-600" />
                 <p className="text-gray-700">
-                  <strong>Email:</strong> siddarthagunjala@gmail.com
+                  <strong>Email:</strong> rohithalugoju@gmail.com
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-5 h-5 text-blue-600" />
                 <p className="text-gray-700">
-                  <strong>Phone:</strong> +91 8639353175
+                  <strong>Phone:</strong> +91 8639189992
                 </p>
               </div>
               <div className="flex items-start gap-2">
                 <MapPin className="w-5 h-5 text-blue-600" />
                 <p className="text-gray-700">
-                  <strong>Address:</strong> AIML-C GRIET
+                  <strong>Address:</strong> IT-A KMIT
                 </p>
               </div>
             </div>
 
-            {/* N.Maneeth Reddy */}
+            {/* ganesh mahadev */}
             <div className="p-4 rounded-lg bg-white shadow-sm">
-              <h3 className="text-lg font-semibold text-indigo-600">Name: N.Maneeth Reddy</h3>
+              <h3 className="text-lg font-semibold text-indigo-600">Name:M.Ganesh</h3>
               <p className="text-gray-700">
-                <strong>PinNo:</strong> 23245A6618
+                <strong>PinNo:</strong> 23BD5A1202
               </p>
               <div className="flex items-center gap-2">
                 <Mail className="w-5 h-5 text-blue-600" />
                 <p className="text-gray-700">
-                  <strong>Email:</strong> cmmaneethreddy@gmail.com
+                  <strong>Email:</strong> ganeshmahadev@gmail.com
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-5 h-5 text-blue-600" />
                 <p className="text-gray-700">
-                  <strong>Phone:</strong> +91 9110543081
+                  <strong>Phone:</strong> +91 9876543210
                 </p>
               </div>
               <div className="flex items-start gap-2">
                 <MapPin className="w-5 h-5 text-blue-600" />
                 <p className="text-gray-700">
-                  <strong>Address:</strong> AIML-C GRIET
+                  <strong>Address:</strong> IT-A KMIT
                 </p>
               </div>
             </div>
 
-            {/* K.Pavan Kalyan */}
+            {/* P.SHASHI VARDHAN */}
             <div className="p-4 rounded-lg bg-white shadow-sm">
-              <h3 className="text-lg font-semibold text-indigo-600">Name: K.Pavan Kalyan</h3>
+              <h3 className="text-lg font-semibold text-indigo-600">Name: p.Shashi Vardhan</h3>
               <p className="text-gray-700">
-                <strong>PinNo:</strong> 22241A66F6
+                <strong>PinNo:</strong> 23BD5A1205
               </p>
               <div className="flex items-center gap-2">
                 <Mail className="w-5 h-5 text-blue-600" />
                 <p className="text-gray-700">
-                  <strong>Email:</strong> Kethavathpavankalyan4096@gmail.com
+                  <strong>Email:</strong> shashivardhan@gmail.com
                 </p>
               </div>
               <div className="flex items-center gap-2">
@@ -90,7 +90,7 @@ const ContactUs: React.FC<ContactUsProps> = () => {
               <div className="flex items-start gap-2">
                 <MapPin className="w-5 h-5 text-blue-600" />
                 <p className="text-gray-700">
-                  <strong>Address:</strong> AIML-C GRIET
+                  <strong>Address:</strong> IT-A KMIT
                 </p>
               </div>
             </div>

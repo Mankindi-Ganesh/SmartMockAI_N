@@ -16,9 +16,19 @@ export const QuestionSection = ({ questions }: QuestionSectionProps) => {
   const [currentSpeech, setCurrentSpeech] =
     useState<SpeechSynthesisUtterance | null>(null);
 
+  // ✅ FIX: handle empty questions safely
+  if (!questions || questions.length === 0) {
+    return (
+      <div className="w-full min-h-96 border rounded-md p-4 flex items-center justify-center">
+        <p className="text-sm text-muted-foreground">
+          No questions found / still loading...
+        </p>
+      </div>
+    );
+  }
+
   const handlePlayQuestion = (qst: string) => {
     if (isPlaying && currentSpeech) {
-      // stop the speech if already playing
       window.speechSynthesis.cancel();
       setIsPlaying(false);
       setCurrentSpeech(null);
@@ -29,7 +39,6 @@ export const QuestionSection = ({ questions }: QuestionSectionProps) => {
         setIsPlaying(true);
         setCurrentSpeech(speech);
 
-        // handle the speech end
         speech.onend = () => {
           setIsPlaying(false);
           setCurrentSpeech(null);
@@ -41,12 +50,12 @@ export const QuestionSection = ({ questions }: QuestionSectionProps) => {
   return (
     <div className="w-full min-h-96 border rounded-md p-4">
       <Tabs
-        defaultValue={questions[0]?.question}
+        defaultValue={questions[0].question} // ✅ now safe
         className="w-full space-y-12"
         orientation="vertical"
       >
         <TabsList className="bg-transparent w-full flex flex-wrap items-center justify-start gap-4">
-          {questions?.map((tab, i) => (
+          {questions.map((tab, i) => (
             <TabsTrigger
               className={cn(
                 "data-[state=active]:bg-emerald-200 data-[state=active]:shadow-md text-xs px-2"
@@ -59,7 +68,7 @@ export const QuestionSection = ({ questions }: QuestionSectionProps) => {
           ))}
         </TabsList>
 
-        {questions?.map((tab, i) => (
+        {questions.map((tab, i) => (
           <TabsContent key={i} value={tab.question}>
             <p className="text-base text-left tracking-wide text-neutral-500">
               {tab.question}
@@ -79,11 +88,12 @@ export const QuestionSection = ({ questions }: QuestionSectionProps) => {
               />
             </div>
 
+            {/* ✅ Interview Recording UI */}
             <RecordAnswer
-  question={tab}
-  isWebCam={isWebCam}
-  setIsWebCam={(state) => setIsWebCam(state)} // Ensure proper state update
-/>
+              question={tab}
+              isWebCam={isWebCam}
+              setIsWebCam={setIsWebCam}
+            />
           </TabsContent>
         ))}
       </Tabs>

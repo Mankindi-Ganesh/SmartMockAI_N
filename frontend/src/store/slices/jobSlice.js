@@ -108,24 +108,30 @@ export const fetchJobs =
   async (dispatch) => {
     try {
       dispatch(jobSlice.actions.requestForAllJobs());
+
       let link = "http://localhost:4000/api/v1/job/getall?";
       let queryParams = [];
-      if (searchKeyword) {
-        queryParams.push(`searchKeyword=${searchKeyword}`);
-      }
-      if (city) {
-        queryParams.push(`city=${city}`);
-      }
-      if (niche) {
-        queryParams.push(`niche=${niche}`);
-      }
+
+      if (searchKeyword) queryParams.push(`searchKeyword=${searchKeyword}`);
+      if (city) queryParams.push(`city=${city}`);
+      if (niche) queryParams.push(`niche=${niche}`);
 
       link += queryParams.join("&");
+
+      console.log("API LINK:", link);   // ✅ ADD THIS
+
       const response = await axios.get(link, { withCredentials: true });
+
+      console.log("API RESPONSE:", response.data);   // ✅ ADD THIS
+
       dispatch(jobSlice.actions.successForAllJobs(response.data.jobs));
-      dispatch(jobSlice.actions.clearAllErrors());
     } catch (error) {
-      dispatch(jobSlice.actions.failureForAllJobs(error.response.data.message || "Failed to fetch jobs"));
+      console.log("ERROR:", error);   // ✅ ADD THIS
+      dispatch(
+        jobSlice.actions.failureForAllJobs(
+          error.response?.data?.message || "Failed"
+        )
+      );
     }
   };
 

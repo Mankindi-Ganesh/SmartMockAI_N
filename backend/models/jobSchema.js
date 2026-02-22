@@ -62,7 +62,7 @@ const jobSchema = new mongoose.Schema({
   source: {
     type: String,
     enum: ["internal", "external"],
-    required: true,
+    default:"internal",
   },
 
   externalId: {
