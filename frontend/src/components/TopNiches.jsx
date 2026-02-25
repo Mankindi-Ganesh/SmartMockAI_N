@@ -36,22 +36,29 @@ const TopNiches = () => {
       id: 6,
       service: "Mobile App Development",
       description:
-        "Expert mobile app development for iOS and Android platforms, creating intuitive and engaging mobile experiences for your users.",
+        "Expert mobile app development for iOS and Android platforms, creating intuitive and engaging mobile experiences.",
     },
   ];
 
   return (
-    <section className="services">
-      <h3>Top Niches</h3>
-      <div className="grid">
-        {services.map((element) => {
-          return (
-            <div className="card" key={element.id}>
-              <h4>{element.service}</h4>
-              <p>{element.description}</p>
+    <section className="top-niches">
+      <div className="top-niches-container">
+
+        <div className="section-header">
+          <h2>Top Niches</h2>
+          <p>Explore high-demand career fields shaping the future</p>
+        </div>
+
+        <div className="niches-grid">
+          {services.map((item) => (
+            <div className="niche-card" key={item.id}>
+              <h4>{item.service}</h4>
+              <p>{item.description}</p>
+              <button className="niche-btn">Explore Jobs →</button>
             </div>
-          );
-        })}
+          ))}
+        </div>
+
       </div>
     </section>
   );

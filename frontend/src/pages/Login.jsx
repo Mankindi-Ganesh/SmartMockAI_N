@@ -40,54 +40,64 @@ const Login = () => {
 
   return (
     <>
-      <section className="authPage">
-        <div className="container login-container">
-          <div className="header">
-            <h3>Login to your account</h3>
-          </div>
-          <form onSubmit={handleLogin}>
-            <div className="inputTag">
-              <label>Login As</label>
-              <div>
-                <select value={role} onChange={(e) => setRole(e.target.value)}>
-                  <option value="">Select Role</option>
-                  <option value="Employer">Login as an Employer</option>
-                  <option value="Job Seeker">Login as a Job Seeker</option>
-                </select>
-                <FaRegUser />
-              </div>
-            </div>
-            <div className="inputTag">
-              <label>Email</label>
-              <div>
-                <input
-                  type="email"
-                  placeholder="youremail@gmail.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <MdOutlineMailOutline />
-              </div>
-            </div>
-            <div className="inputTag">
-              <label>Password</label>
-              <div>
-                <input
-                  type="password"
-                  placeholder="Your Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <RiLock2Fill />
-              </div>
-            </div>
-            <button type="submit" disabled={loading}>
-              Login
-            </button>
-            <Link to={"/register"}>Register Now</Link>
-          </form>
+     <section className="authPage">
+  <div className="authCard">
+    <h2>Login to your account</h2>
+
+    <form onSubmit={handleLogin}>
+
+      {/* Role */}
+      <div className="inputGroup">
+        <label>Login As</label>
+        <div className="inputWrapper">
+          <select value={role} onChange={(e) => setRole(e.target.value)}>
+            <option value="">Select Role</option>
+            <option value="Employer">Login as an Employer</option>
+            <option value="Job Seeker">Login as a Job Seeker</option>
+          </select>
+<FaRegUser className="inputIcon left" />
+<span className="selectArrow">⌄</span>        </div>
+      </div>
+
+      {/* Email */}
+      <div className="inputGroup">
+        <label>Email</label>
+        <div className="inputWrapper">
+          <input
+            type="email"
+            placeholder="youremail@gmail.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <MdOutlineMailOutline className="inputIcon" />
         </div>
-      </section>
+      </div>
+
+      {/* Password */}
+      <div className="inputGroup">
+        <label>Password</label>
+        <div className="inputWrapper">
+          <input
+            type="password"
+            placeholder="Your Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <RiLock2Fill className="inputIcon" />
+        </div>
+      </div>
+
+      <button className="authButton" type="submit" disabled={loading}>
+        {loading ? "Logging in..." : "Login"}
+      </button>
+
+      <p className="authFooter">
+        Don't have an account? <Link to="/register">Register Now</Link>
+      </p>
+
+    </form>
+  </div>
+</section>
     </>
   );
 };

@@ -4,43 +4,51 @@ import { VscTasklist } from "react-icons/vsc";
 import { BiSolidLike } from "react-icons/bi";
 
 const HowItWorks = () => {
+  const steps = [
+    {
+      id: 1,
+      icon: <LuUserPlus />,
+      title: "Create an Account",
+      desc: "Sign up for a free account as a job seeker or employer. Set up your profile in minutes and highlight your skills or job requirements.",
+    },
+    {
+      id: 2,
+      icon: <VscTasklist />,
+      title: "Post or Browse Jobs",
+      desc: "Employers can post detailed job descriptions, while job seekers browse positions and use filters to find matching opportunities.",
+    },
+    {
+      id: 3,
+      icon: <BiSolidLike />,
+      title: "Hire or Get Hired",
+      desc: "Employers shortlist candidates and extend offers. Job seekers review and accept positions aligned with their career goals.",
+    },
+  ];
+
   return (
-    <section className="howItWorks">
-      <h3>How does it work?</h3>
-      <div className="container">
-        <div className="card">
-          <div className="icon">
-            <LuUserPlus />
-          </div>
-          <h4>Create an Account</h4>
-          <p>
-            Sign up for a free account as a job seeker or employer. Set up your
-            profile in minutes to start posting jobs or applying for jobs.
-            Customize your profile to highlight your skills or requirements.
-          </p>
+    <section className="how-works">
+      <div className="how-works-container">
+
+        <div className="section-header">
+          <h2>How It Works</h2>
+          <p>Simple steps to connect talent with opportunities</p>
         </div>
-        <div className="card">
-          <div className="icon">
-            <VscTasklist />
-          </div>
-          <h4>Post or Browse Jobs</h4>
-          <p>
-            Employers can post detailed job descriptions, and job seekers can
-            browse a comprehensive list of available positions. Utilize filters
-            to find jobs that match your skills and preferences.
-          </p>
+
+        <div className="steps-grid">
+          {steps.map((step) => (
+            <div className="step-card" key={step.id}>
+              <div className="step-number">{step.id}</div>
+
+              <div className="step-icon">
+                {step.icon}
+              </div>
+
+              <h4>{step.title}</h4>
+              <p>{step.desc}</p>
+            </div>
+          ))}
         </div>
-        <div className="card">
-          <div className="icon">
-            <BiSolidLike />
-          </div>
-          <h4>Hire or Get Hired</h4>
-          <p>
-            Employers can shortlist candidates and extend job offers. Job
-            seekers can review job offers and accept positions that align with
-            their career goals.
-          </p>
-        </div>
+
       </div>
     </section>
   );

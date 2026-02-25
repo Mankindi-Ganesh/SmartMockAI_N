@@ -87,186 +87,156 @@ const Register = () => {
 
   return (
     <>
-      <section className="authPage">
-        <div className="container">
-          <div className="header">
-            <h3>Create a new account</h3>
+     <section className="authPage">
+  <div className="authCard registerCard">
+    <h2>Create a new account</h2>
+
+    <form onSubmit={handleRegsiter}>
+
+      {/* ROLE + NAME */}
+      <div className="formGrid">
+        <div className="inputGroup">
+          <label>Register As</label>
+          <div className="inputWrapper">
+            <select value={role} onChange={(e) => setRole(e.target.value)}>
+              <option value="">Select Role</option>
+              <option value="Employer">Register as Employer</option>
+              <option value="Job Seeker">Register as Job Seeker</option>
+            </select>
+            <FaRegUser className="inputIcon" />
           </div>
-          <form onSubmit={handleRegsiter}>
-            <div className="wrapper">
-              <div className="inputTag">
-                <label>Register As</label>
-                <div>
-                  <select
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
-                  >
-                    <option value="">Select Role</option>
-                    <option value="Employer">Register as an Employer</option>
-                    <option value="Job Seeker">Register as a Job Seeker</option>
-                  </select>
-                  <FaRegUser />
-                </div>
-              </div>
-              <div className="inputTag">
-                <label>Name</label>
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Your Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                  <FaPencilAlt />
-                </div>
-              </div>
-            </div>
-            <div className="wrapper">
-              <div className="inputTag">
-                <label>Email Address</label>
-                <div>
-                  <input
-                    type="email"
-                    placeholder="youremail@gmail.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                  <MdOutlineMailOutline />
-                </div>
-              </div>
-              <div className="inputTag">
-                <label>Phone Number</label>
-                <div>
-                  <input
-                    type="number"
-                    placeholder="111-222-333"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                  />
-                  <FaPhoneFlip />
-                </div>
-              </div>
-            </div>
-            <div className="wrapper">
-              <div className="inputTag">
-                <label>Address</label>
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Your Address"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                  />
-                  <FaAddressBook />
-                </div>
-              </div>
-              <div className="inputTag">
-                <label>Password</label>
-                <div>
-                  <input
-                    type="password"
-                    placeholder="Your Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                  <RiLock2Fill />
-                </div>
-              </div>
-            </div>
-            {role === "Job Seeker" && (
-              <>
-                <div className="wrapper">
-                  <div className="inputTag">
-                    <label>Your First Niche</label>
-                    <div>
-                      <select
-                        value={firstNiche}
-                        onChange={(e) => setFirstNiche(e.target.value)}
-                      >
-                        <option value="">Your Niche</option>
-                        {nichesArray.map((niche, index) => {
-                          return (
-                            <option key={index} value={niche}>
-                              {niche}
-                            </option>
-                          );
-                        })}
-                      </select>
-                      <MdCategory />
-                    </div>
-                  </div>
-                  <div className="inputTag">
-                    <label>Your Second Niche</label>
-                    <div>
-                      <select
-                        value={secondNiche}
-                        onChange={(e) => setSecondNiche(e.target.value)}
-                      >
-                        <option value="">Your Niche</option>
-                        {nichesArray.map((niche, index) => {
-                          return (
-                            <option key={index} value={niche}>
-                              {niche}
-                            </option>
-                          );
-                        })}
-                      </select>
-                      <MdCategory />
-                    </div>
-                  </div>
-                  <div className="inputTag">
-                    <label>Your Third Niche</label>
-                    <div>
-                      <select
-                        value={thirdNiche}
-                        onChange={(e) => setThirdNiche(e.target.value)}
-                      >
-                        <option value="">Your Niche</option>
-                        {nichesArray.map((niche, index) => {
-                          return (
-                            <option key={index} value={niche}>
-                              {niche}
-                            </option>
-                          );
-                        })}
-                      </select>
-                      <MdCategory />
-                    </div>
-                  </div>
-                </div>
-                <div className="wrapper">
-                  <div className="inputTag">
-                    <label>Coverletter and Grievances</label>
-                    <div>
-                      <textarea
-                        value={coverLetter}
-                        onChange={(e) => setCoverLetter(e.target.value)}
-                        rows={10}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="wrapper">
-                  <div className="inputTag">
-                    <label>Resume</label>
-                    <div>
-                      <input
-                        type="file"
-                        onChange={resumeHandler}
-                        style={{ border: "none" }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-            <button type="submit" disabled={loading}>
-              Register
-            </button>
-            <Link to={"/login"}>Login Now</Link>
-          </form>
         </div>
-      </section>
+
+        <div className="inputGroup">
+          <label>Name</label>
+          <div className="inputWrapper">
+            <input
+              type="text"
+              placeholder="Your Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <FaPencilAlt className="inputIcon" />
+          </div>
+        </div>
+      </div>
+
+      {/* EMAIL + PHONE */}
+      <div className="formGrid">
+        <div className="inputGroup">
+          <label>Email</label>
+          <div className="inputWrapper">
+            <input
+              type="email"
+              placeholder="youremail@gmail.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <MdOutlineMailOutline className="inputIcon" />
+          </div>
+        </div>
+
+        <div className="inputGroup">
+          <label>Phone</label>
+          <div className="inputWrapper">
+            <input
+              type="text"
+              placeholder="111-222-333"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+            <FaPhoneFlip className="inputIcon" />
+          </div>
+        </div>
+      </div>
+
+      {/* ADDRESS + PASSWORD */}
+      <div className="formGrid">
+        <div className="inputGroup">
+          <label>Address</label>
+          <div className="inputWrapper">
+            <input
+              type="text"
+              placeholder="Your Address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+            <FaAddressBook className="inputIcon" />
+          </div>
+        </div>
+
+        <div className="inputGroup">
+          <label>Password</label>
+          <div className="inputWrapper">
+            <input
+              type="password"
+              placeholder="Your Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <RiLock2Fill className="inputIcon" />
+          </div>
+        </div>
+      </div>
+
+      {/* JOB SEEKER FIELDS */}
+      {role === "Job Seeker" && (
+        <>
+          <div className="formGrid">
+            {[firstNiche, secondNiche, thirdNiche].map((value, i) => (
+              <div className="inputGroup" key={i}>
+                <label>Niche {i + 1}</label>
+                <div className="inputWrapper">
+                  <select
+                    value={value}
+                    onChange={(e) =>
+                      i === 0
+                        ? setFirstNiche(e.target.value)
+                        : i === 1
+                        ? setSecondNiche(e.target.value)
+                        : setThirdNiche(e.target.value)
+                    }
+                  >
+                    <option value="">Select Niche</option>
+                    {nichesArray.map((n, index) => (
+                      <option key={index} value={n}>
+                        {n}
+                      </option>
+                    ))}
+                  </select>
+                  <MdCategory className="inputIcon" />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="inputGroup">
+            <label>Cover Letter</label>
+            <textarea
+              rows="5"
+              value={coverLetter}
+              onChange={(e) => setCoverLetter(e.target.value)}
+            />
+          </div>
+
+          <div className="inputGroup">
+            <label>Resume</label>
+            <input type="file" onChange={resumeHandler} />
+          </div>
+        </>
+      )}
+
+      <button className="authButton" disabled={loading}>
+        {loading ? "Creating Account..." : "Register"}
+      </button>
+
+      <p className="authFooter">
+        Already have an account? <Link to="/login">Login Now</Link>
+      </p>
+
+    </form>
+  </div>
+</section>
     </>
   );
 };
