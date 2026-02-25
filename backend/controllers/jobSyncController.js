@@ -19,53 +19,45 @@ export const fetchAdzunaJobs = async () => {
 
     const jobs = response.data.results;
 
-    for (const job of jobs) {
-      // Prevent duplicates
-      const exists = await Job.findOne({ externalId: job.id });
-      if (exists) continue;
+    const formattedJobs = jobs.map((job) => ({
+      updateOne: {
+        filter: { externalId: job.id },
+        update: {
+          $setOnInsert: {
+            title: job.title,
+            jobType:
+              job.contract_time === "full_time"
+                ? "Full-time"
+                : job.contract_time === "part_time"
+                ? "Part-time"
+                : "Full-time",
+            location: job.location?.display_name || "Not specified",
+            companyName: job.company?.display_name || "Unknown",
+            introduction: job.description || "",
+            responsibilities: job.description || "",
+            qualifications: job.description || "",
+            offers: "",
+            salary: job.salary_min
+              ? `${job.salary_min} - ${job.salary_max}`
+              : "Not specified",
+            hiringMultipleCandidates: "No",
+            jobNiche: job.category?.label || "General",
+            source: "external",
+            externalId: job.id,
+            externalUrl: job.redirect_url,
+            jobPostedOn: job.created
+              ? new Date(job.created)
+              : Date.now(),
+          },
+        },
+        upsert: true,
+      },
+    }));
 
-      await Job.create({
-        title: job.title,
+    await Job.bulkWrite(formattedJobs);
 
-        jobType:
-          job.contract_time === "full_time"
-            ? "Full-time"
-            : job.contract_time === "part_time"
-            ? "Part-time"
-            : "Full-time",
-
-        location: job.location?.display_name || "Not specified",
-
-        companyName: job.company?.display_name || "Unknown",
-
-        introduction: job.description || "",
-
-        // Adzuna does not separate these — we reuse description
-        responsibilities: job.description || "",
-        qualifications: job.description || "",
-        offers: "",
-
-        salary: job.salary_min
-          ? `${job.salary_min} - ${job.salary_max}`
-          : "Not specified",
-
-        hiringMultipleCandidates: "No",
-
-        jobNiche: job.category?.label || "General",
-
-        source: "external",
-
-        externalId: job.id,
-        externalUrl: job.redirect_url,
-
-        jobPostedOn: job.created ? new Date(job.created) : Date.now(),
-
-        // No postedBy for external
-      });
-    }
-
-    console.log("Adzuna jobs synced successfully");
+    console.log("✅ Adzuna jobs synced successfully");
   } catch (error) {
-    console.error("Error fetching Adzuna jobs:", error.message);
+    console.error("❌ Error fetching Adzuna jobs:", error.message);
   }
-}
+};
