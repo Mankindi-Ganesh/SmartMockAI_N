@@ -4,159 +4,108 @@ import { toast } from "react-toastify";
 import { clearAllJobErrors, fetchJobs } from "../store/slices/jobSlice";
 import Spinner from "../components/Spinner";
 import { FaSearch } from "react-icons/fa";
-import { Link } from "react-router-dom";
 
 const Jobs = () => {
-  const [city, setCity] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
-  const [niche, setNiche] = useState("");
-  const [selectedNiche, setSelectedNiche] = useState("");
-  const [showCityDropdown, setShowCityDropdown] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
 
   const { jobs, loading, error } = useSelector((state) => state.jobs);
 
-  const handleCityChange = (city) => {
-    setCity(city);
-    setSelectedCity(city);
-  };
-  const handleNicheChange = (niche) => {
-    setNiche(niche);
-    setSelectedNiche(niche);
-  };
-
   const dispatch = useDispatch();
 
+  // Fetch jobs once
   useEffect(() => {
     if (error) {
       toast.error(error);
       dispatch(clearAllJobErrors());
     }
-    dispatch(fetchJobs(city, niche, searchKeyword));
-  }, [dispatch, error, city, niche]);
 
-  const handleSearch = () => {
-    dispatch(fetchJobs(city, niche, searchKeyword));
-  };
+    dispatch(fetchJobs("", "", ""));
+  }, [dispatch, error]);
 
-  const cities = [
-    "Delhi",
-    "Mumbai",
-    "Bangalore",
-    "Kolkata",
-    "Chennai",
-    "Hyderabad",
-    "Pune",
-    "Ahmedabad",
-    "Jaipur",
-    "Lucknow",
-    "Kanpur",
-    "Nagpur",
-    "Indore",
-    "Bhopal",
-    "Patna",
-    "Vadodara",
-    "Ludhiana",
-    "Agra",
-    "Nashik",
-    "Rajkot",
-  ];
-
-  const nichesArray = [
-    "Software Development",
-    "Web Development",
-    "Cybersecurity",
-    "Data Science",
-    "Artificial Intelligence",
-    "Cloud Computing",
-    "DevOps",
-    "Mobile App Development",
-    "Blockchain",
-    "Database Administration",
-    "Network Administration",
-    "UI/UX Design",
-    "Game Development",
-    "IoT (Internet of Things)",
-    "Big Data",
-    "Machine Learning",
-    "IT Project Management",
-    "IT Support and Helpdesk",
-    "Systems Administration",
-    "IT Consulting",
-  ];
+  // Filter jobs by title
+  const filteredJobs = jobs?.filter((job) =>
+  (job.title + job.companyName + job.location)
+    .toLowerCase()
+    .includes(searchKeyword.toLowerCase())
+);
 
   return (
     <>
       {loading ? (
         <Spinner />
       ) : (
-      
         <section className="jobs-page">
-  <div className="jobs-container">
+          <div className="jobs-container">
 
-    {/* SEARCH BAR */}
-    <div className="jobs-search">
-      <FaSearch className="search-icon" />
-      <input
-        type="text"
-        placeholder="Search jobs, companies..."
-        value={searchKeyword}
-        onChange={(e) => setSearchKeyword(e.target.value)}
-      />
-      <button onClick={handleSearch}>Find Job</button>
-    </div>
+            {/* SEARCH BAR */}
+            <div className="jobs-search">
+              <FaSearch className="search-icon" />
+              <input
+                type="text"
+                placeholder="Search jobs, companies..."
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+              />
+            </div>
 
-    {/* FILTERS */}
-    <div className="jobs-filters">
-      <select value={city} onChange={(e) => setCity(e.target.value)}>
-        <option value="">Filter By City</option>
-        {cities.map((city, index) => (
-          <option value={city} key={index}>{city}</option>
-        ))}
-      </select>
+            {/* JOBS GRID */}
+            <div className="jobs-grid">
+              {filteredJobs &&
+                filteredJobs.map((element) => {
 
-      <select value={niche} onChange={(e) => setNiche(e.target.value)}>
-        <option value="">Filter By Niche</option>
-        {nichesArray.map((niche, index) => (
-          <option value={niche} key={index}>{niche}</option>
-        ))}
-      </select>
-    </div>
+                  const applyLink =
+                    element.personalWebsite?.url ||
+                    element.externalUrl ||
+                    element.redirect_url ||
+                    element.url;
 
-    {/* JOBS GRID */}
-    <div className="jobs-grid">
-      {jobs &&
-        jobs.map((element) => (
-          <div className="job-card" key={element._id}>
-            {element.hiringMultipleCandidates === "Yes" ? (
-              <p className="badge multiple">Hiring Multiple Candidates</p>
-            ) : (
-              <p className="badge single">Hiring</p>
-            )}
+                  return (
+                    <div
+                      className="job-card"
+                      key={element._id || element.externalId}
+                    >
+                      {element.hiringMultipleCandidates === "Yes" ? (
+                        <p className="badge multiple">
+                          Hiring Multiple Candidates
+                        </p>
+                      ) : (
+                        <p className="badge single">Hiring</p>
+                      )}
 
-            <h3>{element.title}</h3>
-            <p className="company">{element.companyName}</p>
-            <p className="location">{element.location}</p>
-            <p className="salary">
-              <span>Salary:</span> ₹{element.salary}
-            </p>
-            <p className="posted">
-              <span>Posted On:</span>{" "}
-              {element.jobPostedOn.substring(0, 10)}
-            </p>
+                      <h3>{element.title}</h3>
 
-            <Link
-              className="apply-btn"
-              to={`/post/application/${element._id}`}
-            >
-              Apply Now
-            </Link>
+                      <p className="company">{element.companyName}</p>
+
+                      <p className="location">{element.location}</p>
+
+                      <p className="salary">
+                        <span>Salary:</span> ₹
+                        {element.salary || "Not specified"}
+                      </p>
+
+                      <p className="posted">
+                        <span>Posted On:</span>{" "}
+                        {element.jobPostedOn
+                          ? element.jobPostedOn.substring(0, 10)
+                          : "Recently"}
+                      </p>
+
+                      {applyLink && (
+                        <a
+                          className="apply-btn"
+                          href={applyLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Apply Now
+                        </a>
+                      )}
+                    </div>
+                  );
+                })}
+            </div>
           </div>
-        ))}
-    </div>
-
-  </div>
-</section>
+        </section>
       )}
     </>
   );

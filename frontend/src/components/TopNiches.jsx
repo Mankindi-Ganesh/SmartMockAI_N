@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const TopNiches = () => {
   const services = [
@@ -54,7 +55,9 @@ const TopNiches = () => {
             <div className="niche-card" key={item.id}>
               <h4>{item.service}</h4>
               <p>{item.description}</p>
+              <Link to="/jobs">
               <button className="niche-btn">Explore Jobs →</button>
+              </Link>
             </div>
           ))}
         </div>

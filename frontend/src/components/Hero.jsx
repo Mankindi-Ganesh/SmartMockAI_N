@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
@@ -25,8 +26,13 @@ const Hero = () => {
           </div>
 
           <div className="hero-buttons">
+          <Link to="/jobs">
+
             <button className="primary-btn">Find Jobs</button>
+          </Link>
+          <Link to="/jobs">
             <button className="secondary-btn">Explore Companies</button>
+          </Link>
           </div>
         </div>
 
