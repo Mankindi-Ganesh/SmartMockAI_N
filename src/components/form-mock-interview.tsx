@@ -37,15 +37,10 @@ interface FormMockInterviewProps {
 }
 
 const formSchema = z.object({
-  position: z
-    .string()
-    .min(1, "Position is required")
-    .max(100, "Position must be 100 characters or less"),
-  description: z.string().min(10, "Description is required"),
-  experience: z.coerce
-    .number()
-    .min(0, "Experience cannot be empty or negative"),
-  techStack: z.string().min(1, "Tech stack must be at least a character"),
+  position: z.string().min(1).max(100),
+  description: z.string().min(10),
+  experience: z.coerce.number().min(0),
+  techStack: z.string().min(1),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -67,53 +62,79 @@ export const FormMockInterview = ({ initialData }: FormMockInterviewProps) => {
 
   const breadCrumpPage = initialData ? initialData?.position : "Create";
   const actions = initialData ? "Save Changes" : "Create";
+
   const toastMessage = initialData
     ? { title: "Updated..!", description: "Changes saved successfully..." }
     : { title: "Created..!", description: "New Mock Interview created..." };
 
+  // ✅ FIXED CLEAN FUNCTION
   const cleanAiResponse = (responseText: string) => {
-    // Step 1: Trim any surrounding whitespace
-    let cleanText = responseText.trim();
-
-    // Step 2: Remove any occurrences of "json" or code block symbols (``` or `)
-    cleanText = cleanText.replace(/(json|```|`)/g, "");
-
-    // Step 3: Extract a JSON array by capturing text between square brackets
-    const jsonArrayMatch = cleanText.match(/\[.*\]/s);
-    if (jsonArrayMatch) {
-      cleanText = jsonArrayMatch[0];
-    } else {
-      throw new Error("No JSON array found in response");
-    }
-
-    // Step 4: Parse the clean JSON text into an array of objects
     try {
-      return JSON.parse(cleanText);
+      console.log("RAW AI RESPONSE:", responseText);
+
+      let cleanText = responseText.trim();
+
+      // remove markdown
+      cleanText = cleanText
+        .replace(/```json/g, "")
+        .replace(/```/g, "")
+        .trim();
+
+      // try direct parse
+      try {
+        return JSON.parse(cleanText);
+      } catch (e) {
+        console.warn("Direct parse failed...");
+      }
+
+      // extract JSON array
+      const start = cleanText.indexOf("[");
+      const end = cleanText.lastIndexOf("]");
+
+      if (start !== -1 && end !== -1) {
+        const jsonString = cleanText.substring(start, end + 1);
+        return JSON.parse(jsonString);
+      }
+
+      throw new Error("No valid JSON found");
     } catch (error) {
-      throw new Error("Invalid JSON format: " + (error as Error)?.message);
+      console.error("AI PARSE ERROR:", error);
+
+      // fallback (prevents crash)
+      return [
+        {
+          question: "Error generating question",
+          answer: "Please try again.",
+        },
+      ];
     }
   };
 
+  // ✅ IMPROVED PROMPT
   const generateAiResponse = async (data: FormData) => {
     const prompt = `
-        As an experienced prompt engineer, generate a JSON array containing 5 technical interview questions along with detailed answers based on the following job information. Each object in the array should have the fields "question" and "answer", formatted as follows:
+Return ONLY a valid JSON array.
+No explanation.
+No markdown.
+No extra text.
 
-        [
-          { "question": "<Question text>", "answer": "<Answer text>" },
-          ...
-        ]
+Format:
+[
+  { "question": "string", "answer": "string" }
+]
 
-        Job Information:
-        - Job Position: ${data?.position}
-        - Job Description: ${data?.description}
-        - Years of Experience Required: ${data?.experience}
-        - Tech Stacks: ${data?.techStack}
-
-        The questions should assess skills in ${data?.techStack} development and best practices, problem-solving, and experience handling complex requirements. Please format the output strictly as an array of JSON objects without any additional labels, code blocks, or explanations. Return only the JSON array with questions and answers.
-        `;
+Job Info:
+Position: ${data.position}
+Description: ${data.description}
+Experience: ${data.experience}
+Tech Stack: ${data.techStack}
+`;
 
     const aiResult = await chatSession.sendMessage(prompt);
-    const cleanedResponse = cleanAiResponse(aiResult.response.text());
+
+    const responseText = await aiResult.response.text();
+
+    const cleanedResponse = cleanAiResponse(responseText);
 
     return cleanedResponse;
   };
@@ -122,39 +143,30 @@ export const FormMockInterview = ({ initialData }: FormMockInterviewProps) => {
     try {
       setLoading(true);
 
+      const aiResult = await generateAiResponse(data);
+
       if (initialData) {
-        // update
-        if (isValid) {
-          const aiResult = await generateAiResponse(data);
-
-          await updateDoc(doc(db, "interviews", initialData?.id), {
-            questions: aiResult,
-            ...data,
-            updatedAt: serverTimestamp(),
-          }).catch((error) => console.log(error));
-          toast(toastMessage.title, { description: toastMessage.description });
-        }
+        await updateDoc(doc(db, "interviews", initialData?.id), {
+          questions: aiResult,
+          ...data,
+          updatedAt: serverTimestamp(),
+        });
       } else {
-        // create a new mock interview
-        if (isValid) {
-          const aiResult = await generateAiResponse(data);
-
-          await addDoc(collection(db, "interviews"), {
-            ...data,
-            userId,
-            questions: aiResult,
-            createdAt: serverTimestamp(),
-          });
-
-          toast(toastMessage.title, { description: toastMessage.description });
-        }
+        await addDoc(collection(db, "interviews"), {
+          ...data,
+          userId,
+          questions: aiResult,
+          createdAt: serverTimestamp(),
+        });
       }
+
+      toast(toastMessage.title, { description: toastMessage.description });
 
       navigate("/generate", { replace: true });
     } catch (error) {
       console.log(error);
       toast.error("Error..", {
-        description: `Something went wrong. Please try again later`,
+        description: "Something went wrong. Please try again later",
       });
     } finally {
       setLoading(false);
@@ -176,7 +188,7 @@ export const FormMockInterview = ({ initialData }: FormMockInterviewProps) => {
     <div className="w-full flex-col space-y-4">
       <CustomBreadCrumb
         breadCrumbPage={breadCrumpPage}
-        breadCrumpItems={[{ label: "Mock Interviews", link: "/generate" }]}
+        breadCrumbItems={[{ label: "Mock Interviews", link: "/generate" }]}
       />
 
       <div className="mt-4 flex items-center justify-between w-full">
@@ -191,30 +203,19 @@ export const FormMockInterview = ({ initialData }: FormMockInterviewProps) => {
 
       <Separator className="my-4" />
 
-      <div className="my-6"></div>
-
       <FormProvider {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full p-8 rounded-lg flex-col flex items-start justify-start gap-6 shadow-md "
+          className="w-full p-8 rounded-lg flex-col flex gap-6 shadow-md"
         >
           <FormField
             control={form.control}
             name="position"
             render={({ field }) => (
               <FormItem className="w-full space-y-4">
-                <div className="w-full flex items-center justify-between">
-                  <FormLabel>Job Role / Job Position</FormLabel>
-                  <FormMessage className="text-sm" />
-                </div>
+                <FormLabel>Job Role</FormLabel>
                 <FormControl>
-                  <Input
-                    className="h-12"
-                    disabled={loading}
-                    placeholder="eg:- Full Stack Developer"
-                    {...field}
-                    value={field.value || ""}
-                  />
+                  <Input disabled={loading} {...field} value={field.value || ""} />
                 </FormControl>
               </FormItem>
             )}
@@ -225,18 +226,9 @@ export const FormMockInterview = ({ initialData }: FormMockInterviewProps) => {
             name="description"
             render={({ field }) => (
               <FormItem className="w-full space-y-4">
-                <div className="w-full flex items-center justify-between">
-                  <FormLabel>Job Description</FormLabel>
-                  <FormMessage className="text-sm" />
-                </div>
+                <FormLabel>Description</FormLabel>
                 <FormControl>
-                  <Textarea
-                    className="h-12"
-                    disabled={loading}
-                    placeholder="eg:- describle your job role"
-                    {...field}
-                    value={field.value || ""}
-                  />
+                  <Textarea disabled={loading} {...field} value={field.value || ""} />
                 </FormControl>
               </FormItem>
             )}
@@ -247,19 +239,9 @@ export const FormMockInterview = ({ initialData }: FormMockInterviewProps) => {
             name="experience"
             render={({ field }) => (
               <FormItem className="w-full space-y-4">
-                <div className="w-full flex items-center justify-between">
-                  <FormLabel>Years of Experience</FormLabel>
-                  <FormMessage className="text-sm" />
-                </div>
+                <FormLabel>Experience</FormLabel>
                 <FormControl>
-                  <Input
-                    type="number"
-                    className="h-12"
-                    disabled={loading}
-                    placeholder="eg:- 5 Years"
-                    {...field}
-                    value={field.value || ""}
-                  />
+                  <Input type="number" disabled={loading} {...field} value={field.value || ""} />
                 </FormControl>
               </FormItem>
             )}
@@ -270,42 +252,18 @@ export const FormMockInterview = ({ initialData }: FormMockInterviewProps) => {
             name="techStack"
             render={({ field }) => (
               <FormItem className="w-full space-y-4">
-                <div className="w-full flex items-center justify-between">
-                  <FormLabel>Tech Stacks</FormLabel>
-                  <FormMessage className="text-sm" />
-                </div>
+                <FormLabel>Tech Stack</FormLabel>
                 <FormControl>
-                  <Textarea
-                    className="h-12"
-                    disabled={loading}
-                    placeholder="eg:- React, Typescript..."
-                    {...field}
-                    value={field.value || ""}
-                  />
+                  <Textarea disabled={loading} {...field} value={field.value || ""} />
                 </FormControl>
               </FormItem>
             )}
           />
 
-          <div className="w-full flex items-center justify-end gap-6">
-            <Button
-              type="reset"
-              size={"sm"}
-              variant={"outline"}
-              disabled={isSubmitting || loading}
-            >
-              Reset
-            </Button>
-            <Button
-              type="submit"
-              size={"sm"}
-              disabled={isSubmitting || !isValid || loading}
-            >
-              {loading ? (
-                <Loader className="text-gray-50 animate-spin" />
-              ) : (
-                actions
-              )}
+          <div className="flex justify-end gap-4">
+            <Button type="reset" variant="outline">Reset</Button>
+            <Button type="submit" disabled={!isValid || loading}>
+              {loading ? <Loader className="animate-spin" /> : actions}
             </Button>
           </div>
         </form>
