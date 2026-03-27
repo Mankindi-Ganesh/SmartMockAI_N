@@ -16,8 +16,8 @@ import { useParams } from "react-router-dom";
 import WebCam from "react-webcam";
 import { TooltipButton } from "./tooltip-button";
 import { toast } from "sonner";
-import { chatSession } from "@/scripts";
-import {SaveModal} from "./save-modal"
+import { generateAiResult } from "@/scripts";
+import { SaveModal } from "./save-modal";
 import {
   addDoc,
   collection,
@@ -72,11 +72,9 @@ export const RecordAnswer = ({
         toast.error("Error", {
           description: "Your answer should be more than 30 characters",
         });
-
         return;
       }
 
-      //   ai result
       const aiResult = await generateResult(
         question.question,
         question.answer,
@@ -90,13 +88,9 @@ export const RecordAnswer = ({
   };
 
   const cleanJsonResponse = (responseText: string) => {
-    // Step 1: Trim any surrounding whitespace
     let cleanText = responseText.trim();
-
-    // Step 2: Remove any occurrences of "json" or code block symbols (``` or `)
     cleanText = cleanText.replace(/(json|```|`)/g, "");
 
-    // Step 3: Parse the clean JSON text into an array of objects
     try {
       return JSON.parse(cleanText);
     } catch (error) {
@@ -119,11 +113,8 @@ export const RecordAnswer = ({
     `;
 
     try {
-      const aiResult = await chatSession.sendMessage(prompt);
-
-      const parsedResult: AIResponse = cleanJsonResponse(
-        aiResult.response.text()
-      );
+      const responseText = await generateAiResult(prompt);
+      const parsedResult: AIResponse = cleanJsonResponse(responseText);
       return parsedResult;
     } catch (error) {
       console.log(error);
@@ -151,8 +142,6 @@ export const RecordAnswer = ({
 
     const currentQuestion = question.question;
     try {
-      // query the firbase to check if the user answer already exists for this question
-
       const userAnswerQuery = query(
         collection(db, "userAnswers"),
         where("userId", "==", userId),
@@ -161,7 +150,6 @@ export const RecordAnswer = ({
 
       const querySnap = await getDocs(userAnswerQuery);
 
-      // if the user already answerd the question dont save it again
       if (!querySnap.empty) {
         console.log("Query Snap Size", querySnap.size);
         toast.info("Already Answered", {
@@ -169,8 +157,6 @@ export const RecordAnswer = ({
         });
         return;
       } else {
-        // save the user answer
-
         await addDoc(collection(db, "userAnswers"), {
           mockIdRef: interviewId,
           question: question.question,
@@ -209,7 +195,6 @@ export const RecordAnswer = ({
 
   return (
     <div className="w-full flex flex-col items-center gap-8 mt-4">
-      {/* save modal */}
       <SaveModal
         isOpen={open}
         onClose={() => setOpen(false)}
@@ -229,7 +214,7 @@ export const RecordAnswer = ({
         )}
       </div>
 
-      <div className="flex itece justify-center gap-3">
+      <div className="flex items-center justify-center gap-3">
         <TooltipButton
           content={isWebCam ? "Turn Off" : "Turn On"}
           icon={
@@ -278,7 +263,7 @@ export const RecordAnswer = ({
         <h2 className="text-lg font-semibold">Your Answer:</h2>
 
         <p className="text-sm mt-2 text-gray-700 whitespace-normal">
-          {userAnswer || "Start recording to see your ansewer here"}
+          {userAnswer || "Start recording to see your answer here"}
         </p>
 
         {interimResult && (
